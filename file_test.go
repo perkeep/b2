@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/FiloSottile/b2"
+	"github.com/perkeep/b2"
 )
 
 func getBucket(t *testing.T, c *b2.Client) *b2.BucketInfo {
@@ -77,7 +77,7 @@ func TestFileLifecycle(t *testing.T) {
 		t.Error("Mismatched file ID in GetByName")
 	}
 	_, err = b.GetFileInfoByName("not-exists")
-	if err != b2.FileNotFoundError {
+	if err != b2.ErrFileNotFoundError {
 		t.Errorf("b.GetFileInfoByName did not return FileNotFoundError: %v", err)
 	}
 

@@ -1,9 +1,0 @@
-sudo: false
-language: go
-before_install:
-   - go get github.com/mattn/goveralls
-script:
-   - make test
-after_script:
-   - make cover
-   - goveralls -service travis-ci -coverprofile .GOPATH/cover/all.merged

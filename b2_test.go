@@ -13,24 +13,24 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/FiloSottile/b2"
+	"github.com/perkeep/b2"
 )
 
 var client *b2.Client
 var clientMu sync.Mutex
 
 func getClient(t *testing.T) *b2.Client {
-	accountID := os.Getenv("ACCOUNT_ID")
+	keyID := os.Getenv("KEY_ID")
 	applicationKey := os.Getenv("APPLICATION_KEY")
-	if accountID == "" || applicationKey == "" {
-		t.Fatal("Missing ACCOUNT_ID or APPLICATION_KEY")
+	if keyID == "" || applicationKey == "" {
+		t.Fatal("Missing KEY_ID or APPLICATION_KEY")
 	}
 	clientMu.Lock()
 	defer clientMu.Unlock()
 	if client != nil {
 		return client
 	}
-	c, err := b2.NewClient(accountID, applicationKey, &http.Client{
+	c, err := b2.NewClient(keyID, applicationKey, &http.Client{
 		Transport: &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
 			TLSClientConfig: &tls.Config{
@@ -52,7 +52,7 @@ func TestMain(m *testing.M) {
 
 	if *cleanup {
 		c := getClient(nil)
-		buckets, err := c.Buckets()
+		buckets, err := c.Buckets("")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -94,7 +94,7 @@ func TestBucketLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	buckets, err := c.Buckets()
+	buckets, err := c.Buckets(name)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -79,15 +79,15 @@ func UnwrapError(err error) (b2Err *Error, ok bool) {
 }
 
 const (
-	defaultAPIURL = "https://api.backblaze.com"
-	apiPath       = "/b2api/v1/"
+	defaultAPIURL = "https://api.backblazeb2.com"
+	apiPath       = "/b2api/v2/"
 )
 
 // LoginInfo holds the information obtained upon login, which are sufficient
 // to interact with the API directly.
 type LoginInfo struct {
 	AccountID string
-	ApiURL    string
+	APIURL    string
 
 	// DownloadURL is the base URL for file downloads. It is supposed
 	// to never change for the same account.
@@ -116,7 +116,7 @@ func (c *Client) LoginInfo(refresh bool) (*LoginInfo, error) {
 //
 // The Client handles refreshing authorization tokens transparently.
 type Client struct {
-	accountID, applicationKey string
+	keyID, applicationKey string
 
 	loginInfo atomic.Value // *LoginInfo
 	// loginMu is held to avoid multiple logins in flight at the same time
@@ -127,13 +127,13 @@ type Client struct {
 
 // NewClient calls b2_authorize_account and returns an authenticated Client.
 // httpClient can be nil, in which case http.DefaultClient will be used.
-func NewClient(accountID, applicationKey string, httpClient *http.Client) (*Client, error) {
+func NewClient(keyID, applicationKey string, httpClient *http.Client) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
 
 	c := &Client{
-		accountID:      accountID,
+		keyID:          keyID,
 		applicationKey: applicationKey,
 		hc:             httpClient,
 	}
@@ -165,7 +165,7 @@ func (c *Client) login(failedRes *http.Response) error {
 		return err
 	}
 	r.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(
-		[]byte(c.accountID+":"+c.applicationKey)))
+		[]byte(c.keyID+":"+c.applicationKey)))
 
 	res, err := c.hc.Do(r)
 	if err != nil {
@@ -236,10 +236,9 @@ func (c *Client) doRequest(endpoint string, params map[string]interface{}) (*htt
 		return nil, err
 	}
 	// Reduce debug log noise
-	// delete(params, "accountID")
 	delete(params, "bucketID")
 
-	apiURL := c.loginInfo.Load().(*LoginInfo).ApiURL
+	apiURL := c.loginInfo.Load().(*LoginInfo).APIURL
 	res, err := c.hc.Post(apiURL+apiPath+endpoint, "application/json", bytes.NewBuffer(body))
 	if e, ok := UnwrapError(err); ok && e.Status == http.StatusUnauthorized {
 		if err = c.login(res); err == nil {
@@ -316,7 +315,7 @@ func (c *Client) BucketByName(name string, createIfNotExists bool) (*BucketInfo,
 // Buckets returns a list of buckets sorted by name.
 func (c *Client) Buckets(name string) ([]*BucketInfo, error) {
 	res, err := c.doRequest("b2_list_buckets", map[string]interface{}{
-		"accountId": c.loginInfo.Load().(*LoginInfo).AccountID,
+		"accountId":  c.loginInfo.Load().(*LoginInfo).AccountID,
 		"bucketName": name,
 	})
 	if err != nil {
