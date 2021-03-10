@@ -9,20 +9,6 @@ import (
 	"testing"
 )
 
-func TestUploadError(t *testing.T) {
-	c := getClient(t)
-	b := getBucket(t, c)
-	defer deleteBucket(t, b)
-
-	file := make([]byte, 123456)
-	rand.Read(file)
-	_, err := b.Upload(bytes.NewReader(file), "illegal//filename", "")
-	if err == nil {
-		t.Fatal("Expected an error")
-	}
-	t.Log(err)
-}
-
 func TestUploadFile(t *testing.T) {
 	c := getClient(t)
 	b := getBucket(t, c)
