@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/FiloSottile/b2"
+	"github.com/perkeep/b2"
 )
 
 func getBucket(t *testing.T, c *b2.Client) *b2.BucketInfo {

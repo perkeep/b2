@@ -13,7 +13,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/FiloSottile/b2"
+	"github.com/perkeep/b2"
 )
 
 var client *b2.Client
