@@ -79,15 +79,15 @@ func UnwrapError(err error) (b2Err *Error, ok bool) {
 }
 
 const (
-	defaultAPIURL = "https://api.backblaze.com"
-	apiPath       = "/b2api/v1/"
+	defaultAPIURL = "https://api.backblazeb2.com"
+	apiPath       = "/b2api/v2/"
 )
 
 // LoginInfo holds the information obtained upon login, which are sufficient
 // to interact with the API directly.
 type LoginInfo struct {
 	AccountID string
-	ApiURL    string
+	APIURL    string
 
 	// DownloadURL is the base URL for file downloads. It is supposed
 	// to never change for the same account.
@@ -239,7 +239,7 @@ func (c *Client) doRequest(endpoint string, params map[string]interface{}) (*htt
 	// delete(params, "accountID")
 	delete(params, "bucketID")
 
-	apiURL := c.loginInfo.Load().(*LoginInfo).ApiURL
+	apiURL := c.loginInfo.Load().(*LoginInfo).APIURL
 	res, err := c.hc.Post(apiURL+apiPath+endpoint, "application/json", bytes.NewBuffer(body))
 	if e, ok := UnwrapError(err); ok && e.Status == http.StatusUnauthorized {
 		if err = c.login(res); err == nil {
@@ -316,7 +316,7 @@ func (c *Client) BucketByName(name string, createIfNotExists bool) (*BucketInfo,
 // Buckets returns a list of buckets sorted by name.
 func (c *Client) Buckets(name string) ([]*BucketInfo, error) {
 	res, err := c.doRequest("b2_list_buckets", map[string]interface{}{
-		"accountId": c.loginInfo.Load().(*LoginInfo).AccountID,
+		"accountId":  c.loginInfo.Load().(*LoginInfo).AccountID,
 		"bucketName": name,
 	})
 	if err != nil {
