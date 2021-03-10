@@ -133,11 +133,10 @@ func TestFileListing(t *testing.T) {
 	rand.Read(file)
 
 	for i := 0; i < 2; i++ {
-		fi, err := b.Upload(bytes.NewReader(file), "test-3", "")
+		_, err := b.Upload(bytes.NewReader(file), "test-3", "")
 		if err != nil {
 			t.Fatal(err)
 		}
-		defer c.DeleteFile(fi.ID, fi.Name)
 	}
 
 	var fileIDs []string
@@ -191,5 +190,11 @@ func TestFileListing(t *testing.T) {
 	}
 	if i != len(fileIDs)+2 {
 		t.Errorf("got %d files, expected %d", i-1, len(fileIDs)-1+2)
+	}
+
+	l = b.ListFilesVersions("", "")
+	for l.Next() {
+		fi := l.FileInfo()
+		c.DeleteFile(fi.ID, fi.Name)
 	}
 }

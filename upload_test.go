@@ -39,13 +39,14 @@ func TestUploadFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer c.DeleteFile(fi.ID, fi.Name)
 	if fi.ContentLength != 123456 {
 		t.Error("mismatched fi.ContentLength", fi.ContentLength)
 	}
 	if n, err := io.Copy(ioutil.Discard, f); err != nil || n != 0 {
 		t.Error("should have read 0 bytes:", n, err)
 	}
+
+	c.DeleteFile(fi.ID, fi.Name)
 }
 
 func TestUploadBuffer(t *testing.T) {
@@ -60,13 +61,14 @@ func TestUploadBuffer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer c.DeleteFile(fi.ID, fi.Name)
 	if fi.ContentLength != 123456 {
 		t.Error("mismatched fi.ContentLength", fi.ContentLength)
 	}
 	if buf.Len() != 0 {
 		t.Error("Buffer is not empty")
 	}
+
+	c.DeleteFile(fi.ID, fi.Name)
 }
 
 func TestUploadReader(t *testing.T) {
@@ -81,11 +83,12 @@ func TestUploadReader(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer c.DeleteFile(fi.ID, fi.Name)
 	if fi.ContentLength != 123456 {
 		t.Error("mismatched fi.ContentLength", fi.ContentLength)
 	}
 	if r.Len() != 0 {
 		t.Error("Reader is not empty")
 	}
+
+	c.DeleteFile(fi.ID, fi.Name)
 }
