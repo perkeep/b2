@@ -1,0 +1,7 @@
+# github.com/FiloSottile/b2 v0.0.0-20170207175032-b197f7a2c317
+## explicit
+github.com/FiloSottile/b2
+# github.com/wadey/gocovmerge v0.0.0-20160331181800-b5bfa59ec0ad
+## explicit
+# golang.org/x/tools v0.0.0-20160609034506-95963e031d86
+## explicit
