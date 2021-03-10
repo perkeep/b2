@@ -79,8 +79,8 @@ func UnwrapError(err error) (b2Err *Error, ok bool) {
 }
 
 const (
-	defaultAPIURL = "https://api.backblaze.com"
-	apiPath       = "/b2api/v1/"
+	defaultAPIURL = "https://api.backblazeb2.com"
+	apiPath       = "/b2api/v2/"
 )
 
 // LoginInfo holds the information obtained upon login, which are sufficient
@@ -316,7 +316,7 @@ func (c *Client) BucketByName(name string, createIfNotExists bool) (*BucketInfo,
 // Buckets returns a list of buckets sorted by name.
 func (c *Client) Buckets(name string) ([]*BucketInfo, error) {
 	res, err := c.doRequest("b2_list_buckets", map[string]interface{}{
-		"accountId": c.loginInfo.Load().(*LoginInfo).AccountID,
+		"accountId":  c.loginInfo.Load().(*LoginInfo).AccountID,
 		"bucketName": name,
 	})
 	if err != nil {
