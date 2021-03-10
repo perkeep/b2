@@ -94,7 +94,7 @@ func TestBucketLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	buckets, err := c.Buckets("")
+	buckets, err := c.Buckets(name)
 	if err != nil {
 		t.Fatal(err)
 	}
