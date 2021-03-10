@@ -52,7 +52,7 @@ func TestMain(m *testing.M) {
 
 	if *cleanup {
 		c := getClient(nil)
-		buckets, err := c.Buckets()
+		buckets, err := c.Buckets("")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -94,7 +94,7 @@ func TestBucketLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	buckets, err := c.Buckets()
+	buckets, err := c.Buckets("")
 	if err != nil {
 		t.Fatal(err)
 	}
