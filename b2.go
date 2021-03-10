@@ -87,7 +87,7 @@ const (
 // to interact with the API directly.
 type LoginInfo struct {
 	AccountID string
-	ApiURL    string
+	APIURL    string
 
 	// DownloadURL is the base URL for file downloads. It is supposed
 	// to never change for the same account.
@@ -239,7 +239,7 @@ func (c *Client) doRequest(endpoint string, params map[string]interface{}) (*htt
 	// delete(params, "accountID")
 	delete(params, "bucketID")
 
-	apiURL := c.loginInfo.Load().(*LoginInfo).ApiURL
+	apiURL := c.loginInfo.Load().(*LoginInfo).APIURL
 	res, err := c.hc.Post(apiURL+apiPath+endpoint, "application/json", bytes.NewBuffer(body))
 	if e, ok := UnwrapError(err); ok && e.Status == http.StatusUnauthorized {
 		if err = c.login(res); err == nil {
